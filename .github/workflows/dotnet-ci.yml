@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest   # 👈 IMPORTANT (was ubuntu)
+    runs-on: windows-latest
 
     steps:
       - name: Checkout code
@@ -20,7 +20,7 @@ jobs:
           dotnet-version: '8.0.x'
 
       - name: Restore dependencies
-        run: dotnet restore
+        run: dotnet restore Prog_Poe_Part1/Prog_Poe_Part1.csproj
 
       - name: Build project
-        run: dotnet build --no-restore --configuration Release
+        run: dotnet build Prog_Poe_Part1/Prog_Poe_Part1.csproj --no-restore --configuration Release
