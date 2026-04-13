@@ -1,4 +1,4 @@
-name: Debug Build
+name: Build Chatbot
 
 on:
   push:
@@ -12,21 +12,10 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    - name: Show all files
-      run: |
-        echo "Current directory contents:"
-        dir
-        echo ""
-        echo "Searching for .csproj files everywhere:"
-        Get-ChildItem -Path . -Recurse -Filter *.csproj
-        echo ""
-        echo "Checking if Prog_Poe_Part1.csproj exists in root:"
-        Test-Path "Prog_Poe_Part1.csproj"
-    
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '8.0.x'
     
-    - name: Build
-      run: dotnet build
+    - name: Build with specific project file
+      run: dotnet build Prog_Poe_Part1.csproj
