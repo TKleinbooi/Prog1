@@ -1,13 +1,9 @@
-name: Build Chatbot Application
+name: Debug Build
 
 on:
   push:
     branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
-
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true  # <-- ADD THIS LINE to opt into Node.js 24
+  workflow_dispatch:
 
 jobs:
   build:
@@ -15,11 +11,22 @@ jobs:
     
     steps:
     - uses: actions/checkout@v4
+    
+    - name: Show all files
+      run: |
+        echo "Current directory contents:"
+        dir
+        echo ""
+        echo "Searching for .csproj files everywhere:"
+        Get-ChildItem -Path . -Recurse -Filter *.csproj
+        echo ""
+        echo "Checking if Prog_Poe_Part1.csproj exists in root:"
+        Test-Path "Prog_Poe_Part1.csproj"
+    
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '8.0.x'
-    - name: Restore dependencies
-      run: dotnet restore
-    - name: Build project
-      run: dotnet build --configuration Release
+    
+    - name: Build
+      run: dotnet build
