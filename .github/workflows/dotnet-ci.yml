@@ -17,5 +17,5 @@ jobs:
       with:
         dotnet-version: '8.0.x'
     
-    - name: Build with specific project file
-      run: dotnet build Prog_Poe_Part1.csproj
+    - name: Build
+      run: dotnet build **/*.csproj  # This finds any .csproj in any subfolder
