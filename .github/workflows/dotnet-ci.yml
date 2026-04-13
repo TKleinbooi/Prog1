@@ -1,41 +1,26 @@
-name: Build Chatbot
+name: .NET CI Build
 
 on:
   push:
-    branches: [ main, master ]
-  workflow_dispatch:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
   build:
-    runs-on: windows-latest
-    
+    runs-on: windows-latest   # 👈 IMPORTANT (was ubuntu)
+
     steps:
-    - uses: actions/checkout@v4
-    
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: '8.0.x'
-    
-    - name: Find and build csproj file
-      shell: powershell
-      run: |
-        # Find all .csproj files
-        $csprojFiles = Get-ChildItem -Path . -Recurse -Filter "*.csproj"
-        
-        if ($csprojFiles.Count -eq 0) {
-          Write-Error "No .csproj file found in the repository!"
-          Write-Host "Files in repository:"
-          Get-ChildItem -Recurse
-          exit 1
-        }
-        
-        Write-Host "Found $($csprojFiles.Count) project file(s):"
-        foreach ($file in $csprojFiles) {
-          Write-Host "  - $($file.FullName)"
-        }
-        
-        # Build the first one found
-        $projectToBuild = $csprojFiles[0].FullName
-        Write-Host "Building: $projectToBuild"
-        dotnet build $projectToBuild
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build project
+        run: dotnet build --no-restore --configuration Release
