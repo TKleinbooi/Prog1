@@ -17,5 +17,25 @@ jobs:
       with:
         dotnet-version: '8.0.x'
     
-    - name: Build
-      run: dotnet build **/*.csproj  # This finds any .csproj in any subfolder
+    - name: Find and build csproj file
+      shell: powershell
+      run: |
+        # Find all .csproj files
+        $csprojFiles = Get-ChildItem -Path . -Recurse -Filter "*.csproj"
+        
+        if ($csprojFiles.Count -eq 0) {
+          Write-Error "No .csproj file found in the repository!"
+          Write-Host "Files in repository:"
+          Get-ChildItem -Recurse
+          exit 1
+        }
+        
+        Write-Host "Found $($csprojFiles.Count) project file(s):"
+        foreach ($file in $csprojFiles) {
+          Write-Host "  - $($file.FullName)"
+        }
+        
+        # Build the first one found
+        $projectToBuild = $csprojFiles[0].FullName
+        Write-Host "Building: $projectToBuild"
+        dotnet build $projectToBuild
